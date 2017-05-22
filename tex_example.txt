@@ -1,0 +1,17 @@
+TexExample ExampleTexture {
+  plugin_id            number          value             1207489  INPUT
+  classification       string          value             texture/other:rendernode/vray/texture/other INPUT
+# This is a comment
+  "texa"               texture         "texa"            texture  INPUT
+# Quotes are not mandatory
+  texb                 texture         texb              texture  INPUT
+  ""                   texture         "outColor"        texture  OUTPUT
+  ""                   texture         "oc"              texture  OUTPUT
+  ""                   texture_red     "outColorR"       number   OUTPUT
+  ""                   texture_green   "outColorG"       number   OUTPUT
+  ""                   texture_blue    "outColorB"       number   OUTPUT
+  ""                   texture_alpha   "outAlpha"        number   OUTPUT
+}
+
+
+
