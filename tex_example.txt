@@ -7,8 +7,10 @@ TexExample ExampleTexture {
   "texa"               texture         "texa"            texture  INPUT
 # Quotes are not mandatory
   texb                 texture         texb              texture  INPUT
-  operation            number          mode              enum     INPUT  values:("Add",0) ("Multiply",1) ("Mix",2) default:0
+# Note: do not use round brackets () in the enum string
+  operation            number          mode              enum     INPUT  values:("Add",0) ("Multiply",1) ("Mix ratio",2) ("Mix UV",3) default:0
   ratio                number          ratio             number   INPUT  default:0.5 min:0 max:1 softMin:0.1 softMax:0.9
+  "uvwgen"             uvwgen          "uvCoord"         plugin   INPUT
   ""                   texture         "outColor"        texture  OUTPUT
   ""                   texture         "oc"              texture  OUTPUT
   ""                   texture_red     "outColorR"       number   OUTPUT
