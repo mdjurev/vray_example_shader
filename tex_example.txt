@@ -11,12 +11,15 @@ TexExample ExampleTexture {
   operation            number          mode              enum     INPUT  values:("Add",0) ("Multiply",1) ("Mix ratio",2) ("Mix UV",3) default:0
   ratio                number          ratio             number   INPUT  default:0.5 min:0 max:1 softMin:0.1 softMax:0.9
   "uvwgen"             uvwgen          "uvCoord"         plugin   INPUT
+# Standard output parameters
   ""                   texture         "outColor"        texture  OUTPUT
   ""                   texture         "oc"              texture  OUTPUT
   ""                   texture_red     "outColorR"       number   OUTPUT
   ""                   texture_green   "outColorG"       number   OUTPUT
   ""                   texture_blue    "outColorB"       number   OUTPUT
   ""                   texture_alpha   "outAlpha"        number   OUTPUT
+# An additional output parameter
+  scalar               number          scalar            number   OUTPUT
 }
 
 

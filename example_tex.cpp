@@ -26,18 +26,21 @@ struct TexExample_Params: VRayParameterListDesc {
 		// Note: When implementing a texture with UVs, the texture class should extend MappedTexture, which provides it's own uvwgen parameter.
 		// Here, for the sake of simplicity, we create one ourselves.
 		addParamPlugin("uvwgen", EXT_UVWGEN, -1, "The UV generator. Used only when mode is 3.");
+
+		addOutputParamTextureFloat("scalar", "An additional scalar output parameter. Does a simple sine.","");
 	}
 };
 
 /// The TexExample plugin.
 struct TexExample: VRayPlugin, TextureInterface {
 	/// Constructor.
-	TexExample(VRayPluginDesc *desc): VRayPlugin(desc) {
+	TexExample(VRayPluginDesc *desc): VRayPlugin(desc), scalarOutput(*this) {
 		paramList->setParamCache("texa", &texa);
 		paramList->setParamCache("texb", &texb);
 		paramList->setParamCache("operation", &operation);
 		paramList->setParamCache("ratio", &ratio);
 		paramList->setParamCache("uvwgen", &uvwgen_plugin);
+		paramList->setOutputParamCache("scalar", &scalarOutput);
 		texa=texb=NULL;
 		ratio=NULL;
 		operation=0;
@@ -81,14 +84,7 @@ struct TexExample: VRayPlugin, TextureInterface {
 			return a*r+(1.f-r)*b;
 		}
 		else if(operation=3) {
-			Vector uvw(0.f);
-			bool valid=false;
-			if(uvwgen) {				
-				uvw = uvwgen->getUVW(rc, valid);
-			}
-			if(!valid) {
-				uvw.makeZero();
-			}
+			Vector uvw=getUVW(rc);
 			return a*uvw.x+b*uvw.y;
 		}
 		AColor zero; zero.makeZero();
@@ -126,6 +122,31 @@ private:
 	TextureFloatInterface *ratio;
 	PluginBase *uvwgen_plugin;
 	UVWGenInterface *uvwgen;
+
+	Vector getUVW(const VR::VRayContext &rc) {
+		Vector uvw(0.f);
+		bool valid=false;
+		if(uvwgen) {				
+			uvw = uvwgen->getUVW(rc, valid);
+		}
+		if(!valid) {
+			uvw.makeZero();
+		}
+		return uvw;
+	}
+
+	/// Needed for implementing an output parameter
+	struct SineScalarOutput : TextureFloatInterface {
+		SineScalarOutput(TexExample &parent) : parent(parent) {}
+		TexExample &parent;
+		VR::real getTexFloat(const VR::VRayContext &rc) VRAY_OVERRIDE {
+			Vector uvw = parent.getUVW(rc);
+			return sinf(31.459*(uvw.x+uvw.y));
+		}
+		void getTexFloatBounds(VR::real &fmin, VR::real &fmax) {fmin=0.f; fmax=1.f;}
+		PluginBase* getPlugin(void) { return (PluginBase*) this; }
+	};
+	SineScalarOutput scalarOutput;
 };
 
 
