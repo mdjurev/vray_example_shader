@@ -1,11 +1,14 @@
 TexExample ExampleTexture {
+# This is a comment
+# If plugin_id is supplied, V-Ray will create a Maya node with the given number as a Node ID.
+# You have to supply your own Node IDs though, search for "generate unique universal node id for Maya" online.
   plugin_id            number          value             1207489  INPUT
   classification       string          value             texture/other:rendernode/vray/texture/other INPUT
-# This is a comment
   "texa"               texture         "texa"            texture  INPUT
 # Quotes are not mandatory
   texb                 texture         texb              texture  INPUT
-  operation            number          mode              enum     INPUT  values:("Add",0) ("Multiply",1) default:0
+  operation            number          mode              enum     INPUT  values:("Add",0) ("Multiply",1) ("Mix",2) default:0
+  ratio                number          ratio             number   INPUT  default:0.5 min:0 max:1 softMin:0.1 softMax:0.9
   ""                   texture         "outColor"        texture  OUTPUT
   ""                   texture         "oc"              texture  OUTPUT
   ""                   texture_red     "outColorR"       number   OUTPUT
