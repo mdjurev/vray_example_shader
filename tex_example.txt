@@ -5,6 +5,7 @@ TexExample ExampleTexture {
   "texa"               texture         "texa"            texture  INPUT
 # Quotes are not mandatory
   texb                 texture         texb              texture  INPUT
+  operation            number          mode              enum     INPUT  values:("Add",0) ("Multiply",1) default:0
   ""                   texture         "outColor"        texture  OUTPUT
   ""                   texture         "oc"              texture  OUTPUT
   ""                   texture_red     "outColorR"       number   OUTPUT

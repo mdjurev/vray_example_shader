@@ -20,6 +20,7 @@ struct TexExample_Params: VRayParameterListDesc {
 	TexExample_Params(void) {
 		addParamTexture("texa", -1, "Texture input A", "displayName=(Texture A)");
 		addParamTexture("texb", -1, "Texture input B", "displayName=(Texture B)");
+		addParamInt("operation", 0, -1, "The mode of operation: 0 - add A and B; 1 - multiply A and B;", "displayName=(Mode), enum=(0:Add;1:Multiply;)");
 	}
 };
 
@@ -29,7 +30,9 @@ struct TexExample: VRayPlugin, TextureInterface {
 	TexExample(VRayPluginDesc *desc): VRayPlugin(desc) {
 		paramList->setParamCache("texa", &texa);
 		paramList->setParamCache("texb", &texb);
+		paramList->setParamCache("operation", &operation);
 		texa=texb=NULL;
+		operation=0;
 	}
 
 	/// Destructor.
@@ -52,7 +55,12 @@ struct TexExample: VRayPlugin, TextureInterface {
 	AColor getTexColor(const VRayContext &rc)  VRAY_OVERRIDE {
 		AColor a = texa ? texa->getTexColor(rc) : AColor(0.f, 0.f, 0.f, 0.f);
 		AColor b = texb ? texb->getTexColor(rc) : AColor(0.f, 0.f, 0.f, 0.f);
-		return a+b;
+		if(operation==0)
+			return a+b;
+		else if(operation==1)
+			return a*b;
+		AColor zero; zero.makeZero();
+		return zero;
 	}
 
 	/// Returns the minimum and maximum values of the texture
@@ -64,8 +72,16 @@ struct TexExample: VRayPlugin, TextureInterface {
 		if(texb) texb->getTexColorBounds(bmin, bmax);
 		// Calculate the bounds for the result. The correct result here would mean that the 
 		// texture behaves predictably in displacement
-		fmax = amax+bmax;
-		fmin = VR::Min(amin, bmin);
+		if(operation==0) {
+			fmax = amax+bmax;
+			fmin = VR::Min(amin, bmin);
+		}
+		else if(operation==1) {
+			fmax=VR::Max(amax, bmax);
+			fmax=VR::Max(fmax, amax*bmax);
+			fmin=VR::Min(amin, bmin);
+			fmin=VR::Min(fmin, amin*bmin);
+		}
 	}
 
 	/// Returns the negative texture gradient of the color intensity (can be used for bump mapping).
@@ -74,7 +90,7 @@ struct TexExample: VRayPlugin, TextureInterface {
 private:
 	TextureInterface *texa;
 	TextureInterface *texb;
-
+	int operation;
 };
 
 
