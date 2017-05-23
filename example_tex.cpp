@@ -18,8 +18,8 @@ using namespace VR;
 /// The parameter descriptor for the TexExample plugin.
 struct TexExample_Params: VRayParameterListDesc {
 	TexExample_Params(void) {
-		addParamTexture("texa", -1, "Texture input A");
-		addParamTexture("texb", -1, "Texture input B");
+		addParamTexture("texa", -1, "Texture input A", "displayName=(Texture A)");
+		addParamTexture("texb", -1, "Texture input B", "displayName=(Texture B)");
 	}
 };
 
